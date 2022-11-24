@@ -5,7 +5,7 @@ function submitForm() {
     else updateStudent();
 }
 function createStudent() {
-    if (!validateForm()) return false;
+    if (!validateForm()) return;
     var id = document.getElementById('txtMaSV').value;
     var fullName = document.getElementById('txtTenSV').value;
     var email = document.getElementById('txtEmail').value;
@@ -191,19 +191,19 @@ function require(val, config) {
         config.errorId = config.errorName;
         spanError = spanErrorList[1];
     }
-    else if (config.errorEmail ==='emailError') {
+    else if (config.errorEmail === 'emailError') {
         config.errorId = config.errorEmail;
         spanError = spanErrorList[2];
     }
-    else if (config.errorMath ==='mathError') {
+    else if (config.errorMath === 'mathError') {
         config.errorId = config.errorMath;
         spanError = spanErrorList[3];
     }
-    else if (config.errorPhysic ==='physicError') {
+    else if (config.errorPhysic === 'physicError') {
         config.errorId = config.errorPhysic;
         spanError = spanErrorList[4];
     }
-    else if (config.errorChemistry==='chemistryError') {
+    else if (config.errorChemistry === 'chemistryError') {
         config.errorId = config.errorChemistry;
         spanError = spanErrorList[5];
     }
@@ -229,9 +229,11 @@ function requireDate() {
     const dateInput = document.getElementById('txtNgaySinh');
 
     if (!dateInput.value) {
-        return document.getElementById('dobError').innerHTML = 'Vui lòng chọn ngày sinh';
+        document.getElementById('dobError').innerHTML = 'Vui lòng chọn ngày sinh';
+        return false;
     } else {
-        return document.getElementById('dobError').innerHTML = '';
+        document.getElementById('dobError').innerHTML = '';
+        return true;
     }
 
 }
@@ -262,6 +264,7 @@ function validateForm() {
     // regex test số thập phân có 2 chữ số 
     var numberPoint = /^0$|^[1-9](?:\.[0-9]{1,2})?$|^10(?:\.00?)?$/;
 
+
     // check Id student
     var studentIdValid =
         require(id, { errorId: 'studentIdError' }) &&
@@ -275,16 +278,24 @@ function validateForm() {
     var studentEmailValid =
         require(email, { errorEmail: 'emailError' }) &&
         regexName(email, { regex: emailRegex, errorId: "emailError" });
+
     var studentDob = requireDate();
+
     var studentCourse = requireCourse();
+
     var pointMath = require(id, { errorMath: 'mathError' }) &&
         regexName(math, { regex: numberPoint, errorId: 'mathError' });
+
     var pointPhysic = require(id, { errorPhysic: 'physicError' }) &&
         regexName(physic, { regex: numberPoint, errorId: 'physicError' });
+
     var pointChemistry = require(id, { errorChemistry: 'chemistryError' }) &&
         regexName(chemistry, { regex: numberPoint, errorId: 'chemistryError' });
 
-    return studentIdValid && studentNameValid && studentEmailValid && studentDob && studentCourse && pointMath && pointChemistry && pointPhysic;
+    var isValid = studentIdValid && studentNameValid && studentEmailValid && studentDob && studentCourse && pointMath && pointPhysic && pointChemistry;
+
+    console.log(isValid);
+    return isValid;
 }
 window.onload = function () {
     studentList = mapStudentList(getStudentList());
